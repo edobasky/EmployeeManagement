@@ -1,4 +1,5 @@
 using EmployeeManagement.Api.Data;
+using EmployeeManagement.Api.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseAuthorization();
 

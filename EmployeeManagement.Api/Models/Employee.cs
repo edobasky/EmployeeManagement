@@ -6,13 +6,13 @@ namespace EmployeeManagement.Api.Models
     [Table("employeeTbl")]
     public class Employee
     {
-        [Key]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EmployeeId { get; set; }
         [Required,MaxLength(50)]
         public string Name { get; set; } = null!;
         [Required,MaxLength (11)]
         public string ContactNo { get; set; } = null!;
-        [Required,RegularExpression("")]
+        [Required,EmailAddress]
         public string Email { get; set; } = null!;
 
         public string City { get; set; } = null!;
@@ -28,6 +28,21 @@ namespace EmployeeManagement.Api.Models
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
+        public string Role { get; set; } = string.Empty;
         public int designationId { get; set; }
+        public Designation Designation { get; set; }
     }
+
+    public class LoginRequest
+    {
+        [Required, EmailAddress]
+        public string email { get; set; } = null!;
+
+      /*  [Required]
+        public string password { get; set; } = null!;*/
+
+        [Required]
+        public string contactNo { get; set; } = null!;
+    }
+
 }

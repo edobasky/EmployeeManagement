@@ -20,6 +20,13 @@ namespace EmployeeManagement.Api.Controllers
         [HttpPost("AddDepartment")]
         public IActionResult AddDepartment([FromBody] Department dept)
         {
+            if (string.IsNullOrWhiteSpace(dept.departmentName))
+                return BadRequest("Department name cannot be empty");
+
+            var existingDept = context.Departments.FirstOrDefault(x => x.departmentName == dept.departmentName);
+            if (existingDept is not null)
+                return BadRequest("Department name already exists");
+
             context.Departments.Add(dept);
             context.SaveChanges();
             return Ok("Department Added Successfully");
