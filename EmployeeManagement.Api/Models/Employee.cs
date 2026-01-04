@@ -30,7 +30,7 @@ namespace EmployeeManagement.Api.Models
         public DateTime ModifiedDate { get; set; }
         public string Role { get; set; } = string.Empty;
         public int designationId { get; set; }
-        public Designation Designation { get; set; }
+      //  public Designation Designation { get; set; }
     }
 
     public class LoginRequest

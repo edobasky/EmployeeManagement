@@ -216,9 +216,9 @@ namespace EmployeeManagement.Api.Controllers
                 .SingleOrDefaultAsync(x => x.Email == request.email && x.ContactNo == request.contactNo);
 
             if (user == null)
-                return Unauthorized("Invalid Credentials");
+                return Unauthorized(new { Message = "Invalid Credentials" });
 
-           // var userDesig = await context.Designations.FirstOrDefaultAsync(x => x.designationId == user.designationId);
+            var userDesig = await context.Designations.FirstOrDefaultAsync(x => x.designationId == user.designationId);
 
             // SUCCESS (JWT usually goes here)
             return Ok(new
@@ -231,7 +231,7 @@ namespace EmployeeManagement.Api.Controllers
                     user.Email,
                     user.ContactNo,
                     user.designationId,
-                    user.Designation?.designationName,
+                    userDesig?.designationName,
                     user.Role
                 }
             });

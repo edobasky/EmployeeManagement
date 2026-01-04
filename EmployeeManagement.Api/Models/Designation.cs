@@ -11,6 +11,6 @@ namespace EmployeeManagement.Api.Models
         public int departmentId { get; set; }
         [Required,MaxLength(50)]
         public string designationName { get; set; } = string.Empty;
-        public ICollection<Employee>? Employees { get; set; }
+      //  public ICollection<Employee>? Employees { get; set; }
     }
 }
