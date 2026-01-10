@@ -26,34 +26,34 @@ namespace EmployeeManagement.Api.Controllers
             var existingDept = context.Departments.FirstOrDefault(x => x.departmentName == dept.departmentName);
             if (existingDept is not null)
                 return BadRequest("Department name already exists");
-
+            dept.departmentName.ToUpper();
             context.Departments.Add(dept);
             context.SaveChanges();
-            return Ok("Department Added Successfully");
+            return Created("Department Added Successfully",dept);
         }
 
-        [HttpPost("UpdateDepartment")]
+        [HttpPut("UpdateDepartment")]
         public IActionResult UpdateDepartment([FromBody] Department dept)
         {
             var checkDept = context.Departments.FirstOrDefault(x => x.departmentId == dept.departmentId);
-            if (checkDept is null) return Ok("No Department found");
+            if (checkDept is null) return Ok(new { Message = "No Department found" });
 
             checkDept.departmentName = dept.departmentName;
             checkDept.isActive = dept.isActive;
             context.SaveChanges();
-            return Ok("Department Updated Successfully");
+            return Ok( new { Message = "Department Updated Successfully" });
         }
 
 
-        [HttpPost("RemoveDepartment/{id}")]
+        [HttpDelete("RemoveDepartment/{id}")]
         public IActionResult RemoveDepartment(int id)
         {
             var Dept = context.Departments.FirstOrDefault(x => x.departmentId == id);
-            if (Dept is null) return Ok("No Department found");
+            if (Dept is null) return Ok(new { Message = "No Department found" });
 
             context.Remove(Dept);
             context.SaveChanges();
-            return Ok("Department Deleted Successfully");
+            return Ok(new { Message = "Department Deleted Successfully" });
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Api.Data;
 using EmployeeManagement.Api.Models;
+using EmployeeManagement.Api.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,18 @@ namespace EmployeeManagement.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var data = await context.Designations.ToListAsync();
+            //  var data = await context.Designations.ToListAsync();
+            var data = await (from 
+                d in context.Designations join
+                dep in context.Departments on 
+                d.departmentId equals dep.departmentId
+                select new DesignationDto
+                {
+                    DesignationId = d.designationId,
+                    DepartmentId = dep.departmentId,
+                    DepartmentName = dep.departmentName,
+                    DesignationName = d.designationName
+                }).ToListAsync();
             return Ok(data);
         }
 
@@ -57,13 +69,14 @@ namespace EmployeeManagement.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var exists = await context.Designations
-                .AnyAsync(x => x.designationId == id);
+            var exists = await context.Designations.FirstOrDefaultAsync(x => x.designationId == id);
 
-            if (!exists)
+            if (exists == null)
                 return NotFound("Designation not found");
 
-            context.Entry(model).State = EntityState.Modified;
+            exists.designationName = model.designationName;
+            exists.designationId = model.designationId;
+            exists.departmentId = model.departmentId;
             await context.SaveChangesAsync();
 
             return Ok(model);
