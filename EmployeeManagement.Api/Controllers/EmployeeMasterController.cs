@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Api.Data;
 using EmployeeManagement.Api.Models;
+using EmployeeManagement.Api.Models.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,35 @@ namespace EmployeeManagement.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var employees = await context.Employees
-                .OrderBy(e => e.EmployeeId)
-                .ToListAsync();
+            /* var employees = await context.Employees
+                 .OrderBy(e => e.EmployeeId)
+                 .ToListAsync();*/
+
+            var employees = await (
+                    from e in context.Employees
+                    join d in context.Designations on e.designationId equals d.designationId
+                    join dep in context.Departments on d.departmentId equals dep.departmentId
+                    orderby e.EmployeeId
+                    select new EmployeeDto
+                    {
+                        EmployeeId = e.EmployeeId,
+                        Name = e.Name,
+                        ContactNo = e.ContactNo,
+                        Email = e.Email,
+                        City = e.City,
+                        State = e.State,
+                        Pincode = e.Pincode,
+                        AltContactNo = e.AltContactNo,
+                        Address = e.Address,
+                        DesignationId = d.designationId,
+                        DepartmentId = dep.departmentId,
+                        DesignationName = d.designationName,
+                        DepartmentName = dep.departmentName,
+                        Role = e.Role,
+                        CreatedDate = e.CreatedDate
+                    }
+                ).ToListAsync();
+
 
             return Ok(employees);
         }
